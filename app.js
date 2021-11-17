@@ -35,6 +35,18 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+function auth(req, res, next) {
+  console.log(req.headers);
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    const err = new Error("You are not authenticated!");
+    res.setHeader("WWW-Authenticate", 'Basic"');
+    err.status = 401;
+    return next(err);
+  }
+}
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
